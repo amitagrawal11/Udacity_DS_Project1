@@ -11,31 +11,39 @@ with open('calls.csv', 'r') as f:
     calls = list(reader)
 
 
-def find_max_duration_call(calls):
-    all_call = {}          # calls with time spent on call { tel_no: time_spent }
+def find_max_time_spent_phone_no(calls):
+    phone_dict = {}
     for call in calls:
         call = Call(call)
-        # combining keys to make one key
-        # OPTIMIZATION: remove all duplicate entry since both incoming & answering make two distinct keys and values
-        # e.g. time spent on incoming::answering is the same as answering::incoming
-        tele_key = (call.incoming + ':' + call.answering) + \
-            '::' + (call.answering + ':' + call.incoming)
-        if tele_key not in all_call:
-            all_call[tele_key] = call.during
+        # Adding answering numbers to dictionary with call duration
+        if call.answering not in phone_dict:
+            phone_dict[call.answering] = int(call.during)
         else:
-            all_call[tele_key] += call.during
+            phone_dict[call.answering] += int(call.during)
 
-    # getting telephone which has spent max time
-    tele_no_key = max(all_call, key=lambda k: all_call[k])
+        # adding incoming numbers to dictionary with their call duration
+        if call.incoming not in phone_dict:
+            phone_dict[call.incoming] = int(call.during)
+        else:
+            phone_dict[call.incoming] += int(call.during)
 
-    # extracting incoming call number
-    tele_no = tele_no_key\
-        .split('::')[0]\
-        .split(":")[0]
+    # finding out max time spent phone no in records
+    phone_no = max(phone_dict, key=lambda k: phone_dict[k])
 
-    return tele_no, all_call[tele_no_key]
+    # returning phone_no and time spent
+    return phone_no, phone_dict[phone_no]
 
 
-# TODO: Need to ask which telephone number do I need to display since spent time is between incoming vs answering phone numbers
 print("{0} spent the longest time, {1} seconds, on the phone during September 2016.".format(
-    *find_max_duration_call(calls)))
+    *find_max_time_spent_phone_no(calls)))
+
+# Test Sample
+# test_calls = [
+#     ["95266 42732", "(080)45291968", "02-09-2016 06:56:36", 2329],
+#     ["(080)45291968", "95266 42732", "03-09-2016 14:15:24", 201],
+#     ["(080)45291968", "90365 06212", "01-09-2016 06:30:36", 9],
+#     ["90192 87313", "(080)33251027", "01-09-2016 07:28:01", 110],
+#     ["(044)30727085", "92414 22596", "01-09-2016 07:39:09", 725]
+# ]
+
+# test(test_calls)      # Test Output: (080)45291968
