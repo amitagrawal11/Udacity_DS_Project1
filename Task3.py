@@ -19,14 +19,14 @@ def find_area_codes(calls):
     area_codes = set({})  # e.g. { area_code1, area_code2 }
     for call in calls:
         call = Call(call)
-        if is_bangalore_num(call.incoming) or is_mob(call.incoming):
+        if is_bangalore_num(call.incoming):
             total_calls_made += 1
             area_code = ''
-            if '(0' in call.incoming:
-                idx = call.incoming.index(")")
-                area_code = call.incoming[1:idx]
+            if '(0' in call.answering:
+                idx = call.answering.index(")")
+                area_code = call.answering[1:idx]
             else:
-                area_code = call.incoming[:4]
+                area_code = call.answering[:4]
             area_codes.add(area_code)
     return sorted(area_codes), total_calls_made
 
