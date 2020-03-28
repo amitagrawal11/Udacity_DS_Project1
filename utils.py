@@ -55,3 +55,8 @@ def is_telemarketer_num(num):
     if num.startswith('140') and not is_parantheses(num) and not is_space(num):
         return True
     return False
+
+
+def print_nums(nums):
+    for num in nums:
+        print(num)

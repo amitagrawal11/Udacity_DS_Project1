@@ -1,6 +1,7 @@
 import csv
 from utils import Text
 from utils import Call
+from utils import print_nums
 
 with open('texts.csv', 'r') as f:
     reader = csv.reader(f)
@@ -11,26 +12,21 @@ with open('calls.csv', 'r') as f:
     calls = list(reader)
 
 
-def find_telemarkers(calls):
-    callers = {}
+def find_telemarkers(calls, texts):
+    outgoing = set({})
+    non_tele = set({})
     for call in calls:
         call = Call(call)
-        if call.incoming.startswith('140'):
-            callers[call.incoming] = 1
-    telemarketers = {}
-    for marketer in callers:
-        for text in texts:
-            text = Text(text)
-            if text.incoming != marketer or text.answering != marketer:
-                telemarketers[marketer] = 1
-    telemarketers = [k for k in telemarketers]
-    telemarketers.sort()
-
-    print("These numbers could be telemarketers: ")
-    for marketer in telemarketers:
-        print(marketer)
-    return
+        outgoing.add(call.incoming)
+        non_tele.add(call.answering)
+    for text in texts:
+        text = Text(text)
+        non_tele.add(text.incoming)
+        non_tele.add(text.answering)
+    possible_tele = list(outgoing - non_tele)
+    possible_tele.sort()
+    return possible_tele
 
 
 # Print telemarkers
-find_telemarkers(calls)
+print_nums(find_telemarkers(calls, texts))

@@ -3,6 +3,7 @@ from utils import Text
 from utils import Call
 from utils import is_mob
 from utils import is_bangalore_num
+from utils import print_nums
 
 with open('texts.csv', 'r') as f:
     reader = csv.reader(f)
@@ -31,10 +32,9 @@ def find_area_codes(calls):
 
 
 # Solution: Part A
-print("The numbers called by people in Bangalore have codes:")
 codes, total_calls = find_area_codes(calls)
-for code in codes:
-    print(code)
+print("The numbers called by people in Bangalore have codes:")
+print_nums(codes)
 
 
 def find_fixed_lines_calls(calls):
