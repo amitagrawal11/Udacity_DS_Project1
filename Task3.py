@@ -1,6 +1,8 @@
 import csv
 from utils import Text
 from utils import Call
+from utils import is_mob
+from utils import is_bangalore_num
 
 with open('texts.csv', 'r') as f:
     reader = csv.reader(f)
@@ -11,28 +13,24 @@ with open('calls.csv', 'r') as f:
     calls = list(reader)
 
 
-def find_area_codes(call_records):
+def find_area_codes(calls):
     total_calls_made = 0
-    area_codes = {}
-    sorted_codes = []
-    for record in call_records:
-        call = Call(record)
-        if '(080)' in call.answering and '140' not in call.incoming:
+    area_codes = set({})  # e.g. { area_code1, area_code2 }
+    for call in calls:
+        call = Call(call)
+        if is_bangalore_num(call.incoming) or is_mob(call.incoming):
             total_calls_made += 1
             area_code = ''
-            if '(' in call.incoming:
+            if '(0' in call.incoming:
                 idx = call.incoming.index(")")
-                area_code = call.incoming[:idx+1]
+                area_code = call.incoming[1:idx]
             else:
                 area_code = call.incoming[:4]
-            area_codes[area_code] = 1
-    for code in area_codes:
-        sorted_codes.append(str(code))
-    sorted_codes.sort()
-    return sorted_codes, total_calls_made
+            area_codes.add(area_code)
+    return sorted(area_codes), total_calls_made
 
 
-# Soluction: Part A
+# Solution: Part A
 print("The numbers called by people in Bangalore have codes:")
 codes, total_calls = find_area_codes(calls)
 for code in codes:
@@ -43,7 +41,7 @@ def find_fixed_lines_calls(calls):
     total_fixed_line_calls = 0
     for call in calls:
         call = Call(call)
-        if '(080)' in call.incoming and '(080)' in call.answering:
+        if is_bangalore_num(call.incoming) and is_bangalore_num(call.answering):
             total_fixed_line_calls += 1
     return total_fixed_line_calls
 

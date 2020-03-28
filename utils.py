@@ -13,3 +13,45 @@ class Call:
         self.answering = answering
         self.time = time
         self.during = during
+
+
+def is_space(num):
+    if ' ' in num:
+        return True
+    return False
+
+
+def is_parantheses(num):
+    if '(' in num or ')' in num:
+        return True
+    return False
+
+
+def is_enclosed_parantheses(num):
+    if '(' in num and ')' in num:
+        return True
+    return False
+
+
+def is_mob(num):
+    if (num.startswith('7') or num.startswith('8') or num.startswith('9')) and is_space(num) and not is_parantheses(num):
+        return True
+    return False
+
+
+def is_fixed_line(num):
+    if num.startswith('(0') and is_enclosed_parantheses(num):
+        return True
+    return False
+
+
+def is_bangalore_num(num):
+    if is_fixed_line(num) and num.startswith('(080)'):
+        return True
+    return False
+
+
+def is_telemarketer_num(num):
+    if num.startswith('140') and not is_parantheses(num) and not is_space(num):
+        return True
+    return False
